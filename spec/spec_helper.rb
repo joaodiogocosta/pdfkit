@@ -17,3 +17,21 @@ require 'custom_wkhtmltopdf_path' if File.exists?(File.join(SPEC_ROOT, 'custom_w
 RSpec.configure do |config|
   include Rack::Test::Methods
 end
+
+RSpec::Matchers.define :be_url do |_|
+  match do |actual|
+    actual.adapter.is_a?(Adapters::Url)
+  end
+end
+
+RSpec::Matchers.define :be_file do |_|
+  match do |actual|
+    actual.adapter.is_a?(Adapters::File)
+  end
+end
+
+RSpec::Matchers.define :be_html do |_|
+  match do |actual|
+    actual.adapter.is_a?(Adapters::Html)
+  end
+end

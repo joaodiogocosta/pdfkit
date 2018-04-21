@@ -1,3 +1,8 @@
+require 'pdfkit/adapters/base'
+require 'pdfkit/adapters/url'
+require 'pdfkit/adapters/html'
+require 'pdfkit/adapters/file'
+require 'pdfkit/html_option_parser'
 require 'pdfkit/source'
 require 'pdfkit/pdfkit'
 require 'pdfkit/middleware'
