@@ -37,11 +37,6 @@ class PDFKit
     ensure_executable
   end
 
-  def ensure_executable
-    return if File.exist?(PDFKit.configuration.wkhtmltopdf)
-    raise NoExecutableError
-  end
-
   def to_pdf(path = nil)
     @source.render(@renderer, path)
   end
@@ -54,5 +49,12 @@ class PDFKit
   def to_file(path)
     self.to_pdf(path)
     File.new(path)
+  end
+
+  private
+
+  def ensure_executable
+    return if File.exist?(PDFKit.configuration.wkhtmltopdf)
+    raise NoExecutableError
   end
 end
