@@ -1,5 +1,5 @@
 module Adapters
-  class File < Base
+  class File < Abstract
     def to_input_for_command
       source.path
     end

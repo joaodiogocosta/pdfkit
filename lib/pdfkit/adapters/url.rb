@@ -1,5 +1,5 @@
 module Adapters
-  class Url < Base
+  class Url < Abstract
     PREPROCESS_ERROR_MESSAGE = 'Stylesheets may only be added to an HTML source'.freeze
     def to_input_for_command
       %{"#{shell_safe_url}"}

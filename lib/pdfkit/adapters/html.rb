@@ -1,5 +1,5 @@
 module Adapters
-  class Html < Base
+  class Html < Abstract
     SOURCE_FROM_STDIN = '-'.freeze
 
     def initialize(*args)

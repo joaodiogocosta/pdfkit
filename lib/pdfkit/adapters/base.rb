@@ -1,5 +1,5 @@
 module Adapters
-  class Base
+  class Abstract
     attr_reader :source, :options, :stylesheets
 
     def initialize(source, options = {})
