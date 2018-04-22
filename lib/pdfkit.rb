@@ -1,3 +1,5 @@
+require 'open3'
+
 require 'pdfkit/adapters/base'
 require 'pdfkit/adapters/url'
 require 'pdfkit/adapters/html'

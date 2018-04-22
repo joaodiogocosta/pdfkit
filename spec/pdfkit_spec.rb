@@ -406,16 +406,26 @@ describe PDFKit do
       file_path = "/my/file/path.pdf"
       pdfkit = PDFKit.new('html', :page_size => 'Letter')
 
-      mock_pdf = double
-      expect(mock_pdf).to receive(:puts)
-      expect(mock_pdf).not_to receive(:gets) # do no read the contents when given a file path
-      expect(mock_pdf).to receive(:close_write)
+      mock_stdin = double
+      expect(mock_stdin).to receive(:puts)
+      expect(mock_stdin).to receive(:close_write)
+      allow(mock_stdin).to receive(:close)
 
+      mock_stdout = double
+      allow(mock_stdout).to receive(:binmode)
+      allow(mock_stdout).to receive(:close)
+      expect(mock_stdout).not_to receive(:gets)
 
-      expect(IO).to receive(:popen) do |args, mode, &block|
-        block.call(mock_pdf)
-      end
+      thread = double
+      process = double
+      allow(process).to receive(:existstatus).and_return(1)
+      allow(process).to receive(:success?).and_return(true)
+      allow(thread).to receive(:value).and_return(process)
+      allow(thread).to receive(:kill)
 
+      expect(Open3).to receive(:popen2).and_return([
+        mock_stdin, mock_stdout, thread
+      ])
       expect(::File).to receive(:size).with(file_path).and_return(50)
 
       pdfkit.to_pdf(file_path)

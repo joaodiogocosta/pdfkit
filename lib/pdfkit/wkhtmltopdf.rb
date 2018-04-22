@@ -9,18 +9,37 @@ class PDFKit
     def initialize(options)
       @options = censor(options)
     end
-  
+
+    def execute(source, path = nil)
+      invoke = command(source, path)
+      stdin, stdout, th = Open3.popen2(invoke)
+      stdout.binmode
+      yield(stdin) if block_given?
+      stdin.close_write
+      result = stdout.gets(nil) if path.nil?
+      stdout.close
+      process_status = th.value
+      if empty_result?(path, result) || !successful?(process_status)
+        raise "command failed (exitstatus=#{process_status.exitstatus}): #{invoke}"
+      end
+      result
+    ensure
+      stdin.close
+      stdout.close
+      th.kill
+    end
+
     def normalize_options
       # TODO(cdwort,sigmavirus24): Make this method idempotent in a future release so it can be called repeatedly
       normalized_options = {}
-  
+
       @options.each do |key, value|
         next if !value
-  
+
         # The actual option for wkhtmltopdf
         normalized_key = normalize_arg key
         normalized_key = "--#{normalized_key}" unless SPECIAL_OPTIONS.include?(normalized_key)
-  
+
         # If the option is repeatable, attempt to normalize all values
         if REPEATABLE_OPTIONS.include? normalized_key
           normalize_repeatable_value(normalized_key, value) do |normalized_unique_key, normalized_value|
@@ -30,7 +49,7 @@ class PDFKit
           normalized_options[normalized_key] = normalize_value(value)
         end
       end
-  
+
       @options = normalized_options
     end
 
@@ -57,17 +76,17 @@ class PDFKit
 
       "#{shell_escaped_command} #{input_for_command} #{output_for_command}"
     end
-  
+
     private
 
     def executable
       PDFKit.configuration.wkhtmltopdf
     end
-  
+
     def normalize_arg(arg)
       arg.to_s.downcase.gsub(/[^a-z0-9]/,'-')
     end
-  
+
     def normalize_value(value)
       case value
       when nil
@@ -82,7 +101,7 @@ class PDFKit
         (OS::host_is_windows? && value.to_s.index(' ')) ? "'#{ value.to_s }'" : value.to_s
       end
     end
-  
+
     def normalize_repeatable_value(option_name, value)
       case value
       when Hash, Array
@@ -99,6 +118,20 @@ class PDFKit
       new_options.delete(:root_url)
       new_options.delete(:protocol)
       new_options
+    end
+
+    def empty_result?(path, result)
+      (path && ::File.size(path) == 0) || (path.nil? && result.to_s.strip.empty?)
+    end
+
+    def successful?(status)
+      # Some of the codes: https://code.google.com/p/wkhtmltopdf/issues/detail?id=1088
+      # returned when assets are missing (404): https://code.google.com/p/wkhtmltopdf/issues/detail?id=548
+      if status.success? || (status.exitstatus == 2 && @renderer.error_handling?)
+        true
+      else
+        false
+      end
     end
   end
 end
