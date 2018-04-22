@@ -20,18 +20,18 @@ end
 
 RSpec::Matchers.define :be_url do |_|
   match do |actual|
-    actual.adapter.is_a?(Adapters::Url)
+    actual.adapter.is_a?(PDFKit::Adapters::Url)
   end
 end
 
 RSpec::Matchers.define :be_file do |_|
   match do |actual|
-    actual.adapter.is_a?(Adapters::File)
+    actual.adapter.is_a?(PDFKit::Adapters::File)
   end
 end
 
 RSpec::Matchers.define :be_html do |_|
   match do |actual|
-    actual.adapter.is_a?(Adapters::Html)
+    actual.adapter.is_a?(PDFKit::Adapters::Html)
   end
 end

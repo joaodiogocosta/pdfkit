@@ -1,6 +1,6 @@
 require 'uri'
 
-class PDFKit
+module PDFKit
   class Source
     extend Forwardable
 

@@ -1,4 +1,4 @@
-class PDFKit
+module PDFKit
   class Configuration
     attr_accessor :meta_tag_prefix, :default_options, :root_url
     attr_writer :verbose

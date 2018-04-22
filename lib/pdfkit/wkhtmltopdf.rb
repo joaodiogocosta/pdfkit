@@ -1,4 +1,4 @@
-class PDFKit
+module PDFKit
   class WkHTMLtoPDF
     attr_reader :options
     # Pulled from:

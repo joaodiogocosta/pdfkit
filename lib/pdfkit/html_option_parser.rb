@@ -1,4 +1,4 @@
-class PDFKit
+module PDFKit
   module HtmlOptionParser
     extend self
 

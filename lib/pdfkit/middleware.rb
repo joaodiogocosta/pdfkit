@@ -1,4 +1,4 @@
-class PDFKit
+module PDFKit
   class Middleware
     def initialize(app, options = {}, conditions = {})
       @app        = app
