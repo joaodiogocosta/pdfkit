@@ -7,7 +7,8 @@ module PDFKit
     SPECIAL_OPTIONS = %w[cover toc]
 
     def initialize(options)
-      @options = censor(options)
+      @options = build_options(options)
+      normalize_options
     end
 
     def execute(source, path = nil)
@@ -111,6 +112,12 @@ module PDFKit
       else
         yield [[option_name, normalize_value(value)], nil]
       end
+    end
+
+    def build_options(options)
+      options = PDFKit.configuration.default_options.merge(options)
+      options.delete(:quiet) if PDFKit.configuration.verbose?
+      censor(options)
     end
 
     def censor(opts)
