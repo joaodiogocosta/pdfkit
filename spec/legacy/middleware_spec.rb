@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'legacy_spec_helper'
 
 def app; Rack::Lint.new(@app); end
 

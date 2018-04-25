@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'legacy_spec_helper'
 
 describe PDFKit::Source do
   describe "#url?" do
@@ -75,7 +75,7 @@ describe PDFKit::Source do
 
     it "returns the file path for file sources" do
       source = PDFKit::Source.new(::File.new(__FILE__))
-      expect(source.to_input_for_command).to match 'spec/source_spec.rb'
+      expect(source.to_input_for_command).to match 'spec/legacy/source_spec.rb'
     end
   end
 

@@ -1,4 +1,5 @@
 SPEC_ROOT = File.dirname(__FILE__)
+LEGACY_SPEC_ROOT = File.dirname(File.join(SPEC_ROOT, 'legacy', 'fixtures'))
 $LOAD_PATH.unshift(SPEC_ROOT)
 $LOAD_PATH.unshift(File.join(SPEC_ROOT, '..', 'lib'))
 require 'simplecov'

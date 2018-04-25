@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'legacy_spec_helper'
 
 describe PDFKit::Configuration do
   subject { PDFKit::Configuration.new }

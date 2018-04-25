@@ -1,5 +1,5 @@
 #encoding: UTF-8
-require 'spec_helper'
+require 'legacy_spec_helper'
 
 describe PDFKit do
   describe "initialization" do
@@ -17,7 +17,7 @@ describe PDFKit do
     end
 
     it "accepts a File as the source" do
-      file_path = File.join(SPEC_ROOT,'fixtures','example.html')
+      file_path = File.join(LEGACY_SPEC_ROOT,'fixtures','example.html')
       pdfkit = PDFKit.new(File.new(file_path))
       expect(pdfkit.source).to be_file
       expect(pdfkit.source.to_s).to eq(file_path)
@@ -247,7 +247,7 @@ describe PDFKit do
     end
 
     it "specifies the path to the source if it is a file" do
-      file_path = File.join(SPEC_ROOT,'fixtures','example.html')
+      file_path = File.join(LEGACY_SPEC_ROOT,'fixtures','example.html')
       pdfkit = PDFKit.new(File.new(file_path))
       expect(pdfkit.command).to match /#{file_path} -$/
     end
@@ -451,7 +451,7 @@ describe PDFKit do
 
     it "adds the stylesheet to the head tag if it has a head tag" do
       pdfkit = PDFKit.new("<html><head></head><body>Hai!</body></html>")
-      css = File.join(SPEC_ROOT,'fixtures','example.css')
+      css = File.join(LEGACY_SPEC_ROOT,'fixtures','example.css')
       pdfkit.stylesheets << css
       pdfkit.to_pdf
       expect(pdfkit.source.to_s).to include("<style>#{File.read(css)}</style>")
@@ -459,7 +459,7 @@ describe PDFKit do
 
     it "prepends style tags if the HTML doesn't have a head tag" do
       pdfkit = PDFKit.new("<html><body>Hai!</body></html>")
-      css = File.join(SPEC_ROOT,'fixtures','example.css')
+      css = File.join(LEGACY_SPEC_ROOT,'fixtures','example.css')
       pdfkit.stylesheets << css
       pdfkit.to_pdf
       expect(pdfkit.source.to_s).to include("<style>#{File.read(css)}</style><html>")
@@ -467,14 +467,14 @@ describe PDFKit do
 
     it "throws an error if the source is not html and stylesheets have been added" do
       pdfkit = PDFKit.new('http://google.com')
-      css = File.join(SPEC_ROOT,'fixtures','example.css')
+      css = File.join(LEGACY_SPEC_ROOT,'fixtures','example.css')
       pdfkit.stylesheets << css
       expect { pdfkit.to_pdf }.to raise_error(PDFKit::ImproperSourceError)
     end
 
     it "can deal with ActiveSupport::SafeBuffer" do
       pdfkit = PDFKit.new(ActiveSupport::SafeBuffer.new "<html><head></head><body>Hai!</body></html>")
-      css = File.join(SPEC_ROOT,'fixtures','example.css')
+      css = File.join(LEGACY_SPEC_ROOT,'fixtures','example.css')
       pdfkit.stylesheets << css
       pdfkit.to_pdf
       expect(pdfkit.source.to_s).to include("<style>#{File.read(css)}</style></head>")
@@ -482,7 +482,7 @@ describe PDFKit do
 
     it "escapes \\X in stylesheets" do
       pdfkit = PDFKit.new("<html><head></head><body>Hai!</body></html>")
-      css = File.join(SPEC_ROOT,'fixtures','example_with_hex_symbol.css')
+      css = File.join(LEGACY_SPEC_ROOT,'fixtures','example_with_hex_symbol.css')
       pdfkit.stylesheets << css
       pdfkit.to_pdf
       expect(pdfkit.source.to_s).to include("<style>#{File.read(css)}</style></head>")
@@ -515,7 +515,7 @@ describe PDFKit do
 
   describe "#to_file" do
     before do
-      @file_path = File.join(SPEC_ROOT,'fixtures','test.pdf')
+      @file_path = File.join(LEGACY_SPEC_ROOT,'fixtures','test.pdf')
       File.delete(@file_path) if File.exist?(@file_path)
     end
 
@@ -531,7 +531,7 @@ describe PDFKit do
     end
 
     it "does not truncate data (in Ruby 1.8.6)" do
-      file_path = File.join(SPEC_ROOT,'fixtures','example.html')
+      file_path = File.join(LEGACY_SPEC_ROOT,'fixtures','example.html')
       pdfkit = PDFKit.new(File.new(file_path))
       pdf_data = pdfkit.to_pdf
       pdfkit.to_file(@file_path)
@@ -542,7 +542,7 @@ describe PDFKit do
 
   context "security" do
     before do
-      @test_path = File.join(SPEC_ROOT,'fixtures','security-oops')
+      @test_path = File.join(LEGACY_SPEC_ROOT,'fixtures','security-oops')
       File.delete(@test_path) if File.exist?(@test_path)
     end
 

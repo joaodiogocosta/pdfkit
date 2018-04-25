@@ -1,5 +1,5 @@
 #encoding: UTF-8
-require 'spec_helper'
+require 'legacy_spec_helper'
 require 'rbconfig'
 
 describe 'OS' do

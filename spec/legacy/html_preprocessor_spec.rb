@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'legacy_spec_helper'
 
 describe PDFKit::HTMLPreprocessor do
   describe "#process" do
