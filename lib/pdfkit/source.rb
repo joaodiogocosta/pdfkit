@@ -1,5 +1,3 @@
-require 'uri'
-
 module PDFKit
   class Source
     extend Forwardable
@@ -13,7 +11,9 @@ module PDFKit
       :preprocess,
       :stylesheets,
       :stylesheets=,
-      :render
+      :renderer,
+      :render,
+      :<<
 
     def initialize(raw_source, options = {})
       adapter_klass = find_adapter(raw_source)
@@ -29,6 +29,8 @@ module PDFKit
         Adapters::Url
       elsif html?(raw_source)
         Adapters::Html
+      elsif raw_source.nil?
+        raise NotImplementedError
       else
         raise 'Not Supported'
       end

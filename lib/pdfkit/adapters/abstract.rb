@@ -1,19 +1,29 @@
 module PDFKit
   module Adapters
     class Abstract
-      attr_reader :source, :options, :stylesheets
+      attr_reader :source, :options, :stylesheets, :output
+
+      module Legacy
+        def command(*args)
+          renderer.command(*args)
+        end
+      end
+      include Legacy
 
       def initialize(source, options = {})
         @source = source
         @options = options
         @stylesheets = []
+        @output = options[:output]
       end
 
-      def render(renderer, path = nil)
+      def renderer
+        @renderer ||= build_renderer(options)
+      end
+
+      def render
         preprocess
-        renderer.execute(self, path) do |pdf|
-          yield pdf if block_given?
-        end
+        renderer.execute
       end
 
       def to_input_for_command
@@ -36,6 +46,14 @@ module PDFKit
       protected
 
       attr_writer :source
+
+      def build_renderer(opts = {})
+        WkHTMLtoPDF.new(
+          to_input_for_command,
+          output,
+          opts
+        )
+      end
     end
   end
 end

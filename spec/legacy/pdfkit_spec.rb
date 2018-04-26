@@ -23,8 +23,7 @@ describe PDFKit do
       expect(pdfkit.source.to_s).to eq(file_path)
     end
 
-    # Options
-    ## options keys
+    # Options ## options keys
     it "drops options without values" do
       pdfkit = PDFKit.new('html', :page_size => nil)
       expect(pdfkit.options).not_to have_key('--page-size')
@@ -191,8 +190,8 @@ describe PDFKit do
 
     it "formats source for the command" do
       pdfkit = PDFKit.new('https://www.google.com/search?q=pdfkit')
-      expect(pdfkit.source).to receive(:to_input_for_command)
-      pdfkit.command
+      expect(pdfkit.source.adapter).to receive(:to_input_for_command).and_call_original
+      pdfkit.to_pdf
     end
 
     it "sets up multiple cookies when passed multiple cookies" do
@@ -407,7 +406,7 @@ describe PDFKit do
       pdfkit = PDFKit.new('html', :page_size => 'Letter')
 
       mock_stdin = double
-      expect(mock_stdin).to receive(:puts)
+      expect(mock_stdin).to receive(:<<)
       expect(mock_stdin).to receive(:close_write)
       allow(mock_stdin).to receive(:close)
 

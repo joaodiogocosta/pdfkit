@@ -1,7 +1,7 @@
 require 'open3'
 require 'shellwords'
 
-require 'pdfkit/adapters/base'
+require 'pdfkit/adapters/abstract'
 require 'pdfkit/adapters/url'
 require 'pdfkit/adapters/html'
 require 'pdfkit/adapters/file'

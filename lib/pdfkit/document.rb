@@ -1,29 +1,38 @@
-require 'shellwords'
-
 module PDFKit
   class Document
     extend Forwardable
 
-    def_delegators :source, :adapter, :stylesheets, :stylesheets=
-    def_delegators :renderer, :options
+    attr_reader :source
 
-    attr_reader :renderer, :source
+    def_delegators :source, :adapter, :stylesheets, :stylesheets=, :<<
 
-    attr_accessor :source
+    module Legacy
+      extend Forwardable
 
-    def initialize(url_file_or_html, options = {})
-      @source = Source.new(url_file_or_html, options)
-      options.merge!(HtmlOptionParser.parse(url_file_or_html)) if source.parse_options?
-      @renderer = WkHTMLtoPDF.new(options)
+      def_delegators :source, :renderer
+
+      def command(path = nil)
+        renderer.command(path)
+      end
+
+      def options
+        renderer.options
+      end
+    end
+    include Legacy
+
+    def initialize(*args)
+      options = args.last.is_a?(::Hash) ? args.pop : {}
+      @source = if args.any?
+                  Source.new(args.first, options)
+                else
+                  Source.new(nil, options)
+                end
     end
 
     def to_pdf(path = nil)
-      source.render(renderer, path)
-    end
-
-    def command(path = nil)
-      # FIXME: Just for tests to pass
-      renderer.command(source, path)
+      source.renderer.output = path
+      source.render
     end
 
     def to_file(path)

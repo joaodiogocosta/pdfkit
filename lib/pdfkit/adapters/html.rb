@@ -3,8 +3,11 @@ module PDFKit
     class Html < Abstract
       SOURCE_FROM_STDIN = '-'.freeze
 
-      def initialize(*args)
-        super(*args)
+      def renderer
+        return @renderer if @renderer
+        html_opts = HtmlOptionParser.parse(to_s)
+        renderer_opts = options.merge(html_opts)
+        @renderer = build_renderer(renderer_opts)
       end
 
       def to_input_for_command
@@ -15,19 +18,15 @@ module PDFKit
         source
       end
 
-      def parse_options?
-        true
-      end
-
       def preprocess
         preprocess_html
-        append_stylesheets
+        append_stylesheets if stylesheets.any?
       end
 
-      def render(renderer, path = nil)
-        super do |pdf|
-          pdf.puts(to_s)
-        end
+      def render
+        preprocess
+        renderer << source
+        renderer.execute
       end
 
       private
@@ -43,13 +42,19 @@ module PDFKit
       end
 
       def append_stylesheets
-        stylesheets.each do |stylesheet|
-          if source.to_s.match(/<\/head>/)
-            self.source = source.to_s.gsub(/(<\/head>)/) {|s| style_tag_for(stylesheet) + s }
-          else
-            source.insert(0, style_tag_for(stylesheet))
+        if source.match(/<\/head>/)
+          self.source = source.gsub(/(<\/head>)/) do |s|
+            html_for_stylesheets + s
           end
+        else
+          source.insert(0, html_for_stylesheets)
         end
+      end
+
+      def html_for_stylesheets
+        stylesheets.map do |stylesheet|
+          style_tag_for(stylesheet)
+        end.join('')
       end
 
       def style_tag_for(stylesheet)
